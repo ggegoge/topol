@@ -22,7 +22,7 @@ let make_graph ls : ('a graph) =
     in
     (add v (es @ old_es) g)
   in
-  List.fold_left grph (create compare) ls
+  List.fold_left grph empty ls
 
 (* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
  * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego pMapu, ale
@@ -44,8 +44,8 @@ let rec dfsort g =
       in
       let perm = add v () perm in perm, v::a
   in
-  let perm = create compare in
-  foldi (fun v vs (perm, a) -> visit perm (create compare) a v) g (perm, [])
+  let perm = empty in
+  foldi (fun v vs (perm, a) -> visit perm empty a v) g (perm, [])
 
 let topol ls =
   let g = make_graph ls in
