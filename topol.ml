@@ -9,12 +9,10 @@
 
 open PMap
 (* graf będzie reprezentowany przez taki słownik -- kluczami są wierzchołki 
- * i są połączone z innymi wierzchołkami, z którymi mają krawędzie. prócz tego
- * przechowywana jest informacja z ile krawędzi wchodzi w dany wierzchołek *)
+ * i są połączone z innymi wierzchołkami, z którymi mają krawędzie. *)
 type 'a graph = ('a, 'a list) PMap.t
 
 exception Cykliczne
-
 
 (* z listy na wejściu typu [(a_1,[a_11;...;a_1n]); ...] tworzy graf *)
 let make_graph ls : ('a graph) =
@@ -41,9 +39,10 @@ let rec dfsort g =
       let es =
         try find v g with Not_found -> []
       in
-      let perm, a = List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es in
-      let perm = add v () perm in
-      perm, v::a
+      let perm, a =
+        List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es
+      in
+      let perm = add v () perm in perm, v::a
   in
   let perm = create compare in
   foldi (fun v vs (perm, a) -> visit perm (create compare) a v) g (perm, [])
