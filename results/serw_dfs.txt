@@ -1,0 +1,34 @@
+Kompiluję Sortowanie topologiczne
+Przetwarzam: a_important_case.ml
+
+real	0m0,016s
+user	0m0,004s
+sys	0m0,000s
+Przetwarzam: GH_aswietlik.ml
+
+real	0m0,081s
+user	0m0,081s
+sys	0m0,000s
+Przetwarzam: GH_Day1721.ml
+
+real	0m0,006s
+user	0m0,000s
+sys	0m0,006s
+Przetwarzam: GH_mdrozdowski1996.ml
+
+real	0m0,006s
+user	0m0,006s
+sys	0m0,000s
+Przetwarzam: x_mgienieczko.ml
+mgienieczko: Performance tests begin, expected time ~30 seconds
+
+real	0m36,250s
+user	0m35,997s
+sys	0m0,248s
+Przetwarzam: z_GH_Nhemisirmkow.ml
+
+real	0m12,662s
+user	0m12,654s
+sys	0m0,005s
+48.94user 0.38system 0:49.57elapsed 99%CPU (0avgtext+0avgdata 413968maxresident)k
+6040inputs+8648outputs (17major+142886minor)pagefaults 0swaps
