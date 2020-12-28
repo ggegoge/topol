@@ -56,7 +56,7 @@ let rec sort g s a =
   in
   match s with
   | [] -> if is_empty g then a else raise Cykliczne
-  | s ->
+  | _ ->
      let g, s, a = List.fold_left rmadd (g, [], a) s in
      sort g s a
 
