@@ -11,56 +11,56 @@ open PMap
 (* graf będzie reprezentowany przez taki słownik -- kluczami są wierzchołki 
  * i są połączone z innymi wierzchołkami, z którymi mają krawędzie. prócz tego
  * przechowywana jest informacja z ile krawędzi wchodzi w dany wierzchołek *)
-type 'a graph = ('a, 'a list * int) PMap.t
+type 'a graph = ('a, 'a list) PMap.t
 
 exception Cykliczne
 
-(* dla listy wierzchołków każdemu zwiększa licznik wchodzących krawędzi *)
-let in_edges g vs =
-  let incr g v =
-    let es, c =
-      try find v g with Not_found -> [], 0
-    in
-    add v (es, c+1) g
-  in
-  List.fold_left incr g vs
 
 (* z listy na wejściu typu [(a_1,[a_11;...;a_1n]); ...] tworzy graf *)
 let make_graph ls : ('a graph) =
   let grph g (v, es) =
-    let g = in_edges g es in
-    let old_es, c =
-      try find v g with Not_found -> [], 0
+    let old_es =
+      try find v g with Not_found -> []
     in
-    (add v (es @ old_es, c) g)
+    (add v (es @ old_es) g)
   in
   List.fold_left grph (create compare) ls
 
-(* znajduje na początku te wierzchołki, w które nie wchodzi żadna krawędź *)
-let get_zeros g =
-  foldi (fun v (_, c) a -> if c = 0 then v::a else a) g []
-
-(* decr usuwa krawędzie i wyłapuje wierzchołki, do których nic nie wchodzi
- * rmadd usuwa wierzchołki z grafu i dodaje do wyniku
- * sort zwraca posortowany topologicznie graf (w zlej kolejnosci) *)
-let rec sort g s a =
-  let decr (g, ns) v =
-    let es, c = find v g in
-    let g = add v (es, c-1) g in
-    if c-1 = 0 then (g, v::ns) else (g, ns)
+let rec dfsort g =
+  let rec visit perm temp a v =
+    if mem v perm then perm, a
+    else if mem v temp then raise Cykliczne
+    else
+      let temp = add v () temp in
+      let es =
+        try find v g with Not_found -> []
+      in
+      let perm, a = List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es in
+      (* let temp = remove v temp in *)
+      let perm = add v () perm in
+      perm, v::a
   in
-  let rmadd (g, ns, a) v =
-    let es, _ = find v g in
-    let g, ns = List.fold_left decr (g, ns) es in
-    (remove v g, ns, v::a)    
-  in
-  match s with
-  | [] -> if is_empty g then a else raise Cykliczne
-  | s ->
-     let g, s, a = List.fold_left rmadd (g, [], a) s in
-     sort g s a
+  let perm = create compare in
+  foldi (fun v vs (perm, a) -> visit perm (create compare) a v) g (perm, [])
 
 let topol ls =
   let g = make_graph ls in
-  let s = get_zeros g in
-  sort g s [] |> List.rev
+  dfsort g |> snd
+
+
+let ex_g1 = [(1, [2;3;4]); (2, [3; 4]); (3, [4; 5]); (4, [5])];;
+assert (topol ex_g1 = [1;2;3;4;5]);;
+let ex_g2 = [(1, [2;3;4]); (2, [3; 4]); (3, [4; 5]); (4, [5]); (4, [5])];;
+assert (topol ex_g2 = [1;2;3;4;5]);;
+let ex_g3 = [(1, [2;3;4]); (2, [3; 4]); (2, [3; 4]); (3, [4; 5]);
+             (4, [5]); (4, [5]); (1, [2;3;4])];;
+assert (topol ex_g3 = [1;2;3;4;5]);;
+let ex_g4 = [(1, [3;4]); (2, [3; 4]); (2, [3; 4]); (3, [4; 5]);
+             (4, [5]); (4, [5]); (1, [2;3;4])];;
+assert (topol ex_g4 = [1;2;3;4;5]);;
+let ex_g5 = [(1, [3;4]); (2, [3; 4]); (2, [3; 4]); (3, [4; 5]);
+             (4, [5]); (4, [5]); (1, [2;3;4]); (5, [1])];; (* cykl *)
+assert ((try topol ex_g5 with Cykliczne -> []) = []);;
+let ex_g6 = [(1, [3;4]); (2, [3; 4]); (2, [3; 4]); (3, [4; 5]);
+             (4, [5]); (4, [5]); (1, [2;3;4]); (5, [5])];; (* samocykl *)
+assert ((try topol ex_g6 with Cykliczne -> []) = []);;
