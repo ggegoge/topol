@@ -1,4 +1,4 @@
-(* topol implementacja *)
+(* topol implementacja -- wersja z algorytmem DFS *)
 
 (* v - vertex, vs - vertices
  * e - edge, es - edges
