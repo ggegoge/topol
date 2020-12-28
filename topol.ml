@@ -26,6 +26,12 @@ let make_graph ls : ('a graph) =
   in
   List.fold_left grph (create compare) ls
 
+(* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
+ * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego pMapu, ale
+ * jako de facto pSet -- mam tam słownik, gdzie klucze to wierzchołki, a wartości to
+ * unity. temp - tymczasowe oznaczenia, perm - permanentne *)
+(* dfsort zwraca parę: zbiór permanentnych znaczników i posortowany graf.
+ * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
 let rec dfsort g =
   let rec visit perm temp a v =
     if mem v perm then perm, a
@@ -36,7 +42,6 @@ let rec dfsort g =
         try find v g with Not_found -> []
       in
       let perm, a = List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es in
-      (* let temp = remove v temp in *)
       let perm = add v () perm in
       perm, v::a
   in
