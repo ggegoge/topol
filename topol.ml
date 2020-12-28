@@ -34,7 +34,7 @@ let make_graph ls : ('a graph) =
     in
     (add v (es @ old_es, c) g)
   in
-  List.fold_left grph (create compare) ls
+  List.fold_left grph empty ls
 
 (* znajduje na początku te wierzchołki, w które nie wchodzi żadna krawędź *)
 let get_zeros g =
