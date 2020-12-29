@@ -27,7 +27,8 @@ let make_graph ls : ('a graph) =
 (* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
  * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego pMapu, ale
  * jako de facto pSet -- mam tam słownik, gdzie klucze to wierzchołki, a wartości to
- * unity. temp - tymczasowe oznaczenia, perm - permanentne *)
+ * unity. temp - tymczasowe oznaczenia, perm - permanentne. gdy wierzchołek nie jest
+ * ani w temp ani w perm, to znaczy, że jeszcze visit tam nie był *)
 (* dfsort zwraca posortowany graf.
  * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
 let dfsort g =
