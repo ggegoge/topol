@@ -11,8 +11,9 @@
 open PMap
 (* graf będzie reprezentowany przez taki słownik -- kluczami są wierzchołki 
  * i są połączone z innymi wierzchołkami, z którymi mają krawędzie. *)
-(* przechowuję też znacznik mówiący, czy dany wierzchołek był już odwiedzony
- * lub czy jestem w trakcie jego odwiedzania (pomocne przy wychwytywaniu cykliczności) *)
+(* przechowuję też znacznik [mark] mówiący, czy dany wierzchołek był 
+ * już odwiedzony (Perm) lub czy jestem w trakcie odwiedzania jego gałęzi [Temp]
+ * (pomocne przy wychwytywaniu cykliczności) lub czy nie byłem tam [None] *)
 type mark = None | Temp | Perm
 type 'a graph = ('a, 'a list * mark) PMap.t
 
@@ -29,11 +30,9 @@ let make_graph ls : ('a graph) =
   List.fold_left grph empty ls
 
 (* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
- * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego typu `mark`
- * który ma warianty Temp (w trakcie), Perm (już skończony dfs) oraz konstruktor
- * None (brak odwiedzin). visit odwiedza dfsowo i oznacza, a na koniec dodaje 
- * do akumulatora i zwraca zmieniony graf oraz akumulator, który jest końcowym 
- * wynikiem sortowania topologicznego *)
+ * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego typu `mark`.
+ * visit odwiedza dfsowo i oznacza, a na koniec dodaje do akumulatora i zwraca 
+ * zmieniony graf oraz akumulator, który jest końcowym wynikiem sortowania topologicznego *)
 let dfsort g =
   let rec visit a v g =
     let es, m =
@@ -49,8 +48,6 @@ let dfsort g =
        in
        let g = add v (es, Perm) g in v::a, g
   in
-  foldi (fun v vs (a, g) -> visit a v g) g ([], g) |> fst
+  foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 
-let topol ls =
-  let g = make_graph ls in
-  dfsort g
+let topol ls = dfsort (make_graph ls)
