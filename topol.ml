@@ -47,6 +47,4 @@ let dfsort g =
   let perm = empty in
   foldi (fun v vs (perm, a) -> visit perm empty a v) g (perm, []) |> snd
 
-let topol ls =
-  let g = make_graph ls in
-  dfsort g
+let topol ls = dfsort (make_graph ls)
