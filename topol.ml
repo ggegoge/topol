@@ -30,7 +30,7 @@ let make_graph ls : ('a graph) =
  * unity. temp - tymczasowe oznaczenia, perm - permanentne *)
 (* dfsort zwraca parę: zbiór permanentnych znaczników i posortowany graf.
  * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
-let rec dfsort g =
+let dfsort g =
   let rec visit perm temp a v =
     if mem v perm then perm, a
     else if mem v temp then raise Cykliczne
