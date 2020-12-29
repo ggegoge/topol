@@ -28,7 +28,7 @@ let make_graph ls : ('a graph) =
  * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego pMapu, ale
  * jako de facto pSet -- mam tam słownik, gdzie klucze to wierzchołki, a wartości to
  * unity. temp - tymczasowe oznaczenia, perm - permanentne *)
-(* dfsort zwraca parę: zbiór permanentnych znaczników i posortowany graf.
+(* dfsort zwraca posortowany graf.
  * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
 let dfsort g =
   let rec visit perm temp a v =
