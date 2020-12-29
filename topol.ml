@@ -5,7 +5,8 @@
  * g - graph
  * s - stack 
  * c - count 
- * a - accumulator *)
+ * a - accumulator,
+ * m - mark *)
 
 open PMap
 (* graf będzie reprezentowany przez taki słownik -- kluczami są wierzchołki 
@@ -30,11 +31,9 @@ let make_graph ls : ('a graph) =
 (* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
  * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego typu `mark`
  * który ma warianty Temp (w trakcie), Perm (już skończony dfs) oraz konstruktor
- * None (brak odwiedzin) *)
-(* dfsort zwraca parę: zbiór permanentnych znaczników i posortowany graf.
- * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
-let get_mark v g =
-  let _, m = find v g in m
+ * None (brak odwiedzin). visit odwiedza dfsowo i oznacza, a na koniec dodaje 
+ * do akumulatora i zwraca zmieniony graf oraz akumulator, który jest końcowym 
+ * wynikiem sortowania topologicznego *)
 let dfsort g =
   let rec visit a v g =
     let es, m =
@@ -50,8 +49,8 @@ let dfsort g =
        in
        let g = add v (es, Perm) g in v::a, g
   in
-  foldi (fun v vs (a, g) -> visit a v g) g ([], g)
+  foldi (fun v vs (a, g) -> visit a v g) g ([], g) |> fst
 
 let topol ls =
   let g = make_graph ls in
-  dfsort g |> fst
+  dfsort g
