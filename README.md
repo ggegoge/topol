@@ -8,6 +8,7 @@ consult
 [wikipedia](https://en.wikipedia.org/wiki/Topological_sorting#Depth-first_search) and
 the `topol.ml` file itself.
 
+### tests
 all tests from the `tests` folder are written by other people and i
 just use them to test whether my implementation is indeed working
 properly. They are all on the GNUPL or WFTPL licenses. The same
