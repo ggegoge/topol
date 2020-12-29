@@ -1,4 +1,4 @@
-(* topol implementacja -- wersja z algorytmem DFS *)
+(* topol implementacja -- wersja DFS z pamiętaniem znaczników *)
 
 (* v - vertex, vs - vertices
  * e - edge, es - edges
@@ -10,43 +10,48 @@
 open PMap
 (* graf będzie reprezentowany przez taki słownik -- kluczami są wierzchołki 
  * i są połączone z innymi wierzchołkami, z którymi mają krawędzie. *)
-type 'a graph = ('a, 'a list) PMap.t
+(* przechowuję też znacznik mówiący, czy dany wierzchołek był już odwiedzony
+ * lub czy jestem w trakcie jego odwiedzania (pomocne przy wychwytywaniu cykliczności) *)
+type mark = None | Temp | Perm
+type 'a graph = ('a, 'a list * mark) PMap.t
 
 exception Cykliczne
 
 (* z listy na wejściu typu [(a_1,[a_11;...;a_1n]); ...] tworzy graf *)
 let make_graph ls : ('a graph) =
   let grph g (v, es) =
-    let old_es =
-      try find v g with Not_found -> []
+    let old_es, m =
+      try find v g with Not_found -> [], None
     in
-    (add v (es @ old_es) g)
+    (add v (es @ old_es, m) g)
   in
   List.fold_left grph empty ls
 
 (* sortuję metodą dfs-ową. oznaczam każdy wierzchołek by wiedzieć, czy już go
- * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego pMapu, ale
- * jako de facto pSet -- mam tam słownik, gdzie klucze to wierzchołki, a wartości to
- * unity. temp - tymczasowe oznaczenia, perm - permanentne *)
+ * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego typu `mark`
+ * który ma warianty Temp (w trakcie), Perm (już skończony dfs) oraz konstruktor
+ * None (brak odwiedzin) *)
 (* dfsort zwraca parę: zbiór permanentnych znaczników i posortowany graf.
  * procedura rekurencyjna visit służy temu dfsowemu przechodzeniu po grafie *)
-let rec dfsort g =
-  let rec visit perm temp a v =
-    if mem v perm then perm, a
-    else if mem v temp then raise Cykliczne
-    else
-      let temp = add v () temp in
-      let es =
-        try find v g with Not_found -> []
-      in
-      let perm, a =
-        List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es
-      in
-      let perm = add v () perm in perm, v::a
+let get_mark v g =
+  let _, m = find v g in m
+let dfsort g =
+  let rec visit a v g =
+    let es, m =
+      try find v g with Not_found -> [], None
+    in
+    match m with
+    | Perm -> a, g
+    | Temp -> raise Cykliczne
+    | None ->
+       let g = add v (es, Temp) g in
+       let a, g =
+         List.fold_left (fun (a, g) v -> visit a v g) (a, g) es
+       in
+       let g = add v (es, Perm) g in v::a, g
   in
-  let perm = empty in
-  foldi (fun v vs (perm, a) -> visit perm empty a v) g (perm, [])
+  foldi (fun v vs (a, g) -> visit a v g) g ([], g)
 
 let topol ls =
   let g = make_graph ls in
-  dfsort g |> snd
+  dfsort g |> fst
