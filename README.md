@@ -9,6 +9,8 @@ properly implement this and that's why it is slower. You can ask
 wikipedia for  more information
 about Kahn's algorithm -- [here](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)
 
+
+### tests
 all tests from the `tests` folder are written by other people and i
 just use them to test whether my implementation is indeed working
 properly. They are all on the GNUPL or WFTPL licenses. The same
