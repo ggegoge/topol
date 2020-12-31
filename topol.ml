@@ -4,7 +4,6 @@
  * e - edge, es - edges
  * g - graph
  * s - stack 
- * c - count 
  * a - accumulator *)
 
 open PMap
