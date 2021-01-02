@@ -31,7 +31,8 @@ let make_graph ls : ('a graph) =
 (* sortuję metodą dfsową. oznaczam każdy wierzchołek by wiedzieć, czy już go
  * nie przechodziłem i w ten sposób wychwytuję cykle itp. używam do tego typu mark.
  * visit odwiedza dfsowo i oznacza, a na koniec dodaje do akumulatora i zwraca 
- * zmieniony graf oraz akumulator, który jest końcowym wynikiem sortowania topologicznego *)
+ * zmieniony graf oraz akumulator, który jest końcowym wynikiem sortowania 
+ * topologicznego *)
 let dfsort g =
   let rec visit a v g =
     let es, m =
