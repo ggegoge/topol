@@ -24,7 +24,7 @@ let make_graph ls : ('a graph) =
     let old_es, m =
       try find v g with Not_found -> [], None
     in
-    (add v (es @ old_es, m) g)
+    add v (es @ old_es, m) g
   in
   List.fold_left grph empty ls
 
@@ -46,7 +46,7 @@ let dfsort g =
        let a, g =
          List.fold_left (fun (a, g) v -> visit a v g) (a, g) es
        in
-       let g = add v (es, Perm) g in v::a, g
+       let g = add v (es, Perm) g in (v::a, g)
   in
   foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 
