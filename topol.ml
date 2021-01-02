@@ -32,7 +32,7 @@ let make_graph ls : ('a graph) =
     let old_es, c =
       try find v g with Not_found -> [], 0
     in
-    (add v (es @ old_es, c) g)
+    add v (es @ old_es, c) g
   in
   List.fold_left grph empty ls
 
@@ -52,7 +52,7 @@ let rec sort g s a =
   let rmadd (g, ns, a) v =
     let es, _ = find v g in
     let g, ns = List.fold_left decr (g, ns) es in
-    (remove v g, ns, v::a)    
+    (remove v g, ns, v::a)
   in
   match s with
   | [] -> if is_empty g then a else raise Cykliczne
