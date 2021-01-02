@@ -3,7 +3,7 @@
 (* v - vertex, vs - vertices
  * e - edge, es - edges
  * g - graph
- * s - stack 
+ * s - stack
  * a - accumulator *)
 
 open PMap
