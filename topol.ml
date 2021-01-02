@@ -19,7 +19,7 @@ let make_graph ls : ('a graph) =
     let old_es =
       try find v g with Not_found -> []
     in
-    (add v (es @ old_es) g)
+    add v (es @ old_es) g
   in
   List.fold_left grph empty ls
 
