@@ -12,8 +12,8 @@ open PMap
  * i są połączone z tymi wierzchołkami, z którymi mają krawędzie. *)
 (* przechowuję też znacznik [mark] mówiący, czy dany wierzchołek był 
  * już odwiedzony [Perm] lub czy jestem w trakcie odwiedzania jego gałęzi [Temp]
- * (pomocne przy wychwytywaniu cykliczności) lub czy nie byłem tam w ogóle [None] *)
-type mark = None | Temp | Perm
+ * (pomocne przy wychwytywaniu cykliczności) lub czy nie byłem tam w ogóle [Nil] *)
+type mark = Nil | Temp | Perm
 type 'a graph = ('a, 'a list * mark) PMap.t
 
 exception Cykliczne
@@ -22,7 +22,7 @@ exception Cykliczne
 let make_graph ls : ('a graph) =
   let grph g (v, es) =
     let old_es, m =
-      try find v g with Not_found -> [], None
+      try find v g with Not_found -> [], Nil
     in
     add v (es @ old_es, m) g
   in
@@ -36,12 +36,12 @@ let make_graph ls : ('a graph) =
 let dfsort g =
   let rec visit a v g =
     let es, m =
-      try find v g with Not_found -> [], None
+      try find v g with Not_found -> [], Nil
     in
     match m with
     | Perm -> a, g
     | Temp -> raise Cykliczne
-    | None ->
+    | Nil ->
        let g = add v (es, Temp) g in
        let a, g =
          List.fold_left (fun (a, g) v -> visit a v g) (a, g) es
