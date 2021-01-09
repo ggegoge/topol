@@ -1,0 +1,146 @@
+#+OPTIONS: toc:nil
+#+OPTIONS: num:nil
+#+TITLE: Sortowanie topologiczne grafu
+* topol – informacje basicowe
+** Treść zadania:
+Sortowanie topologiczne polega na rozszerzeniu grafu skierowanego bez
+cykli (DAG-u) do porządku liniowego. 
+
+Mówiąc prościej, mając dany DAG należy przypisać wierzchołkom takie
+różne liczby naturalne (nadające kolejność tym wierzchołkom), żeby dla
+każdej krawędzi grafu jej źródło miało niższy numer niż jej cel.
+
+Mówiąc jeszcze prościej, mając daną częściową informację o zależności
+np. czynności od siebie (np. buty wkładamy po skarpetkach, krawat po
+koszuli itp. ale kolejność wkładania skarpetek i koszuli może być
+dowolna) mamy wygenerować ścisłą kolejność wykonywania czynności
+(np. koszula, skarpetki, buty, krawat).
+
+Konkretnie należy zaprogramować implementację [[file:topol.ml][=topol=]] załączonej specyfikacji [[file:%20topol.mli][=topol.mli=]].
+* schemat działania
+** implementacja grafu
+To część dość wspólna wszystkich implementacji. Używam mapy z =pMap=.
+*** struktura
+**** wersja z =main=
+trzymam dla wierchu liczniki wchodzących krawędzi oraz listę
+skrawędziowanych wierchów
+**** wersja z =dfs=
+trzymam jedynie pary wierch - skrawędziowane
+**** wersja z ~dfs2~
+trzymam znaczniki
+*** funkcja tworząca
+** gałąź =main= - wariant z *algorytmem Kahna*
+*** kroki
+1. dostaje graf, stos i akumulator.
+2. wszystkie elementy stosu wrzuca do akumulatora
+3. usuwa stosowe wierzchołki oraz idące z nich krawędzie z grafu,
+4. do tego tworzy nowy stos zawierający te wierzchołki, które mają 0 wchodzących 
+w nie krawędzi. na koniec zwraca akumulator -- posortowany topologicznie graf. 
+rekurentne ogonowo
+*** funkcje pomocowe
+rmadd usuwa wierzchołek z grafu, dodaje do akumulatora. decr usuwa wychodzące 
+zeń krawędzie i wyłapuje te wierzchołki, które po tym procesie mają licznik 
+wchodzących krawędzi równy 0, dodaje je do stosu
+
+
+
+** gałęzie =dfs= i =dfs2= - wariant z algorytmem opartym na *przeszukiwaniu wszerz*
+*** kroki
+1. Odwiedzam każdy wierch i może on być w trzech stanach:
+   1) właśnie jestem wewnątrz tej gałęzi (znacznik tymczaoswy – ~temp~) – jeśli znowu tam dotarłem to
+      znaczy, że ciągle jestem w jego wywołaniu rekurencyjnym
+   2) już tam byłem (znacznik na stałe – ~perm~) i obejrzałem całą tę gałąź
+   3) w ogóle nie odwiedziłem (brak oznaczenia)
+2. jeśli wierch ma znacznik permanentny to pomijam i idę dalej – już
+   tam najwyraźniej byłem
+3. jeśli ma tymczasowy, to znaczy, że wywołując się z tego wiercha do
+   niego wróciłem – /błąd/. Graf nie jest acykliczny, więc podnoszę
+   wyjątek ~Cykliczne~.
+4. Jeśli nie ma żadnego, to daję mu =temp= i idę w głąb.
+
+Wszystko obsługuje procedure =visit=.
+*** różnice między =dfs= i =dfs2=
+**** znacznikowanie
+***** w =dfs= używam modułu =pMap= jako zbioru
+Przechowuję pary klucz - ~unit~. Mam zbiór =temp= oraz =perm=. W
+czasie wizyty jednej trzymam obydwa i jak skończę przerzucam do =perm=
+i daję dalej
+***** w =dfs2= używam znaczników trzymanych w grafie
+mam typ wariantowy
+#+BEGIN_SRC ocaml
+type mark = Nil | Temp | Perm
+#+END_SRC
+i edytuję graf i przekazuję go sobie w każdym węźle trzymając właściwy
+znacznik
+**** procedura visit
+***** =dfs= gałąź
+#+BEGIN_SRC ocaml
+  let dfsort g =
+    let rec visit perm temp a v =
+      if mem v perm then perm, a
+      else if mem v temp then raise Cykliczne
+      else
+        let temp = add v () temp in
+        let es =
+          try find v g with Not_found -> []
+        in
+        let perm, a =
+          List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es
+        in
+        let perm = add v () perm in perm, v::a
+    in
+    let perm = empty in
+    foldi (fun v _ (perm, a) -> visit perm empty a v) g (perm, []) |> snd
+#+END_SRC
+***** =dfs2=
+#+BEGIN_SRC ocaml
+  let dfsort g =
+    let rec visit a v g =
+      let es, m =
+        try find v g with Not_found -> [], Nil
+      in
+      match m with
+      | Perm -> a, g
+      | Temp -> raise Cykliczne
+      | Nil ->
+         let g = add v (es, Temp) g in
+         let a, g =
+           List.fold_left (fun (a, g) v -> visit a v g) (a, g) es
+         in
+         let g = add v (es, Perm) g in (v::a, g)
+    in
+    foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
+#+END_SRC
+* przykład działania 
+#+BEGIN_SRC ocaml :exports both
+  #load "pMap.cmo";;
+  #load "topol.cmo";;
+  open Topol
+
+  let grafik =
+    [
+      (1, [2; 3; 4]);
+      (2, [3; 4]);
+      (2, [3; 4]);
+      (3, [4; 5]);
+      (4, [5]);
+      (4, [5]);
+      (1, [2; 3; 4]);
+    ];;
+
+  topol grafik
+#+END_SRC
+
+#+RESULTS:
+| 1 | 2 | 3 | 4 | 5 |
+
+* issues
+PROBLEM DUZY - /co jesli w inpucie powtorzy sie
+jakas krawedz?.../ 
+
+*w sumie to nie ma problemu,* ponieważ jeśli
+nawet jakaś krawędź pojawi się dwukrotnie to dodanie jej do mapy 
+sprawi, że najwyżej będzie jakiś wierch połączony dwa razy do swoich
+synów, ale to nie powinno być problemem, ponieważ najwyżej licznik dla
+danego wierzchołka spadnie poniżej 0, ale już go dodałem wcześniej gdy ten
+był =0, więc mając go na stosie usunę go bez kłopotów i tyle żem go widział
