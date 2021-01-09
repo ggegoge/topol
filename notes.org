@@ -16,7 +16,7 @@ koszuli itp. ale kolejność wkładania skarpetek i koszuli może być
 dowolna) mamy wygenerować ścisłą kolejność wykonywania czynności
 (np. koszula, skarpetki, buty, krawat).
 
-Konkretnie należy zaprogramować implementację [[file:topol.ml][=topol=]] załączonej specyfikacji [[file:%20topol.mli][=topol.mli=]].
+Konkretnie należy zaprogramować implementację [[file:topol.ml][=topol.ml=]] załączonej specyfikacji [[file:topol.mli][=topol.mli=]].
 * schemat działania
 ** implementacja grafu
 To część dość wspólna wszystkich implementacji. Używam mapy z =pMap=.
