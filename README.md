@@ -2,6 +2,9 @@
 topological sorting of a graph. written in ocaml. for my university
 course actually
 
+_For further details regarding this project as a whole see
+the [notes](notes.org) file written in Polish with a more thourough description._
+
 within this branch I've used __Kahn's algorithm__ for topological
 sorting. It may be slightly slower but on the other hand it is a
 simpler concept perhaps. Or maybe I've simply couldn't manage to
