@@ -44,7 +44,7 @@ let make_graph ls : ('a graph) =
  * tenże akumulator, który jest końcowym wynikiem sortowania topologicznego *)
 let dfsort g =
   let rec visit a v g =
-    let es, m =
+    let (es, m) =
       try find v g with Not_found -> [], Nil
     in
     match m with
