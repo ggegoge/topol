@@ -1,7 +1,7 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: num:nil
 #+TITLE: Sortowanie topologiczne grafu
-***** DONE /status projektu/ <2021-01-16 Sat>
+***** DONE /status projektu/ – ukończony <2021-01-16 Sat>
 * topol – informacje basicowe
 ** Treść zadania:
 Sortowanie topologiczne polega na rozszerzeniu grafu skierowanego bez
