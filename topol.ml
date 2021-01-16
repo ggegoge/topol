@@ -39,12 +39,11 @@ let dfsort g =
       let es =
         try find v g with Not_found -> []
       in
-      let perm, a =
+      let (perm, a) =
         List.fold_left (fun (perm, a) v -> visit perm temp a v) (perm, a) es
       in
-      let perm = add v () perm in perm, v::a
+      let perm = add v () perm in perm, v :: a
   in
-  let perm = empty in
-  foldi (fun v _ (perm, a) -> visit perm empty a v) g (perm, []) |> snd
+  foldi (fun v _ (perm, a) -> visit perm empty a v) g (empty, []) |> snd
 
 let topol ls = dfsort (make_graph ls)
