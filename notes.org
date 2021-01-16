@@ -115,8 +115,7 @@ znacznik
     in
     foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 #+END_SRC
-* przykład działania 
-* 
+* przykład działania  
 #+BEGIN_SRC ocaml :exports both
   #load "pMap.cmo";;
   #load "topol.cmo";;
@@ -140,7 +139,7 @@ znacznik
 | 1 | 2 | 3 | 4 | 5 |
 * review
 *** gałąź =review=
-to gałąź z kodem niemoim, a któremu robię review
+to gałąź z kodem niemoim, a któremu robię review. Kod jest Tomka Ziębowicza
 * issues
 PROBLEM DUZY - /co jesli w inpucie powtorzy sie
 jakas krawedz?.../ 
