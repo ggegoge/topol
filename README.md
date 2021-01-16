@@ -2,6 +2,9 @@
 topological sorting of a graph. written in ocaml. for my university
 course actually
 
+_For further details regarding this project as a whole see
+the [notes](notes.org) file written in Polish with a more thourough description._
+
 On this branch I've implemented the __dfs algorithm__ for topological
 sorting. For further info you can
 consult
