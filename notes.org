@@ -17,6 +17,9 @@ dowolna) mamy wygenerować ścisłą kolejność wykonywania czynności
 (np. koszula, skarpetki, buty, krawat).
 
 Konkretnie należy zaprogramować implementację [[file:topol.ml][=topol.ml=]] załączonej specyfikacji [[file:topol.mli][=topol.mli=]].
+** implementacja
+wbrew nazwie gałęzi ~main~, najgłówniejsza wersja znajduje się w
+gałęzi ~dfs2~ – to ta wersja koniec końców została posłana do oceny
 * schemat działania
 ** implementacja grafu
 To część dość wspólna wszystkich implementacji. Używam mapy z =pMap=.
@@ -112,6 +115,7 @@ znacznik
     foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 #+END_SRC
 * przykład działania 
+* 
 #+BEGIN_SRC ocaml :exports both
   #load "pMap.cmo";;
   #load "topol.cmo";;
@@ -133,7 +137,9 @@ znacznik
 
 #+RESULTS:
 | 1 | 2 | 3 | 4 | 5 |
-
+* review
+*** gałąź =review=
+to gałąź z kodem niemoim, a któremu robię review
 * issues
 PROBLEM DUZY - /co jesli w inpucie powtorzy sie
 jakas krawedz?.../ 
