@@ -79,7 +79,7 @@ element gets hashed with its index so that we can be sure that in the
 results from topol everything is correct *)
 
 
-Random.init 2137;;
+let () = Random.init 2137;;
 
 let rnd_int n () = Random.int (n / 2);;
 
@@ -143,9 +143,9 @@ let inttopol n =
   let topolised = topol g in
   let czas = Sys.time () -. start in
   let f = float_of_int n in
-  let t' = czas *. 10000000. /. (f *. log f) in
+  let t' = czas *. 100000. /. f (* (f *. log f) *) in
   if verbose then
-    Printf.printf "size n=%d, t=%2.4f, t'=%f\n" n czas t';
+    Printf.printf "int test: size n=%d, t=%2.4f, t'=%f\n" n czas t';
   test n g topolised
 
 let strtopol n =
@@ -156,19 +156,19 @@ let strtopol n =
   let topolised = topol g in
   let czas = Sys.time () -. start in
   let f = float_of_int n in
-  let t' = czas *. 10000000. /. (f *. log f) in
+  let t' = czas *. 100000. /. f (* (f *. log f) *) in
   if verbose then
-    Printf.printf "size n=%d, t=%2.4f, t'=%f\n" n czas t';
+    Printf.printf "string test: size n=%d, t=%2.4f, t'=%f\n" n czas t';
   test n g topolised
 
 ;;
-inttopol 10000
+let _  = inttopol 10000 in ()
 ;;
-strtopol 1000;;
+let _ = strtopol 1000 in ()
 ;;
 let powers a n =
   let rec aux curr k =
     if k = 0 then [] else curr :: aux (curr * a) (k-1)
   in aux 1 n;;
 
-List.iter (fun p -> (fun _ -> ()) (strtopol p)) (powers 2 max_n) 
+let () = List.iter (fun p -> (fun _ -> ()) (strtopol p)) (powers 2 max_n)
