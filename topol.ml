@@ -29,7 +29,7 @@ let in_edges g vs =
 let make_graph ls : ('a graph) =
   let grph g (v, es) =
     let g = in_edges g es in
-    let old_es, c =
+    let (old_es, c) =
       try find v g with Not_found -> [], 0
     in
     add v (es @ old_es, c) g
@@ -50,14 +50,14 @@ let rec sort g s a =
     if c-1 = 0 then (g, v::ns) else (g, ns)
   in
   let rmadd (g, ns, a) v =
-    let es, _ = find v g in
-    let g, ns = List.fold_left decr (g, ns) es in
+    let (es, _) = find v g in
+    let (g, ns) = List.fold_left decr (g, ns) es in
     (remove v g, ns, v::a)
   in
   match s with
   | [] -> if is_empty g then a else raise Cykliczne
   | _ ->
-     let g, s, a = List.fold_left rmadd (g, [], a) s in
+     let (g, s, a) = List.fold_left rmadd (g, [], a) s in
      sort g s a
 
 let topol ls =
