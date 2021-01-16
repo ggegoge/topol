@@ -1,9 +1,13 @@
 (* +------------------- * -------------------+ *)
 (* |----------------- topol -----------------| *)
-(* | autor: Grzegorz Cichosz ----------------| *)
-(* | recenzentka: Katarzyna Mielnik ---------| *)
+(* |-----------------------------------------| *)
+(* |- autor: Grzegorz Cichosz ---------------| *)
+(* |- recenzentka: Katarzyna Mielnik --------| *)
 (* +------------------- * -------------------+ *)
 
+
+
+(* oznaczenia parametrów: *)
 (* v - vertex, vs - vertices
  * e - edge, es - edges
  * g - graph
