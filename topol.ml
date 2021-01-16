@@ -31,7 +31,7 @@ exception Cykliczne
 let make_graph ls : ('a graph) =
   let grph g (v, es) =
     let (old_es, m) =
-      try find v g with Not_found -> [], Nil
+      if mem v g then find v g else [], Nil
     in
     add v (es @ old_es, m) g
   in
@@ -45,7 +45,7 @@ let make_graph ls : ('a graph) =
 let dfsort g =
   let rec visit a v g =
     let (es, m) =
-      try find v g with Not_found -> [], Nil
+      if mem v g then find v g else [], Nil
     in
     match m with
     | Perm -> a, g
