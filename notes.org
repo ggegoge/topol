@@ -116,9 +116,12 @@ znacznik
     foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 #+END_SRC
 * przykład działania  
-#+BEGIN_SRC ocaml :exports both
+#+BEGIN_SRC ocaml :exports none
+  (* konieczne przy egzekucji z toplevela *)
   #load "pMap.cmo";;
   #load "topol.cmo";;
+#+END_SRC
+#+BEGIN_SRC ocaml :exports both
   open Topol
 
   let grafik =
