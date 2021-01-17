@@ -1,6 +1,7 @@
 #+OPTIONS: toc:nil
 #+OPTIONS: num:nil
 #+TITLE: Sortowanie topologiczne grafu
+#+DATE: 15 stycznia 2021
 ***** DONE /status projektu/ – ukończony <2021-01-16 Sat>
 * topol – informacje basicowe
 ** Treść zadania:
@@ -100,18 +101,18 @@ znacznik
 #+BEGIN_SRC ocaml
   let dfsort g =
     let rec visit a v g =
-      let es, m =
-        try find v g with Not_found -> [], Nil
+      let (es, m) =
+        if mem v g then find v g else [], Nil
       in
       match m with
       | Perm -> a, g
       | Temp -> raise Cykliczne
       | Nil ->
          let g = add v (es, Temp) g in
-         let a, g =
+         let (a, g) =
            List.fold_left (fun (a, g) v -> visit a v g) (a, g) es
          in
-         let g = add v (es, Perm) g in (v::a, g)
+         let g = add v (es, Perm) g in (v :: a, g)
     in
     foldi (fun v _ (a, g) -> visit a v g) g ([], g) |> fst
 #+END_SRC
@@ -144,8 +145,7 @@ znacznik
 *** gałąź =review=
 to gałąź z kodem niemoim, a któremu robię review. Kod jest Tomka Ziębowicza
 * issues
-PROBLEM DUZY - /co jesli w inpucie powtorzy sie
-jakas krawedz?.../ 
+****** PROBLEM DUZY - /co jesli w inpucie powtorzy sie jakas krawedz?.../ 
 
 *w sumie to nie ma problemu,* ponieważ jeśli
 nawet jakaś krawędź pojawi się dwukrotnie to dodanie jej do mapy 
@@ -153,3 +153,14 @@ sprawi, że najwyżej będzie jakiś wierch połączony dwa razy do swoich
 synów, ale to nie powinno być problemem, ponieważ najwyżej licznik dla
 danego wierzchołka spadnie poniżej 0, ale już go dodałem wcześniej gdy ten
 był =0, więc mając go na stosie usunę go bez kłopotów i tyle żem go widział
+****** łapanie błędów vs ~if~
+W ~dfs2~ koniec końców zmieniłem łapanie błędów typu
+#+BEGIN_SRC ocaml
+  try find v g with Not_found -> [], Nil
+#+END_SRC
+na sprawdzanie pewnego predykatu w ifowy sposób:
+#+BEGIN_SRC ocaml
+  if mem v g then find v g else [], Nil
+#+END_SRC
+wydawało mi się, że to jest bardziej wskazane – miast wyjątkowości
+porządny ifik.
