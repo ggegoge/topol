@@ -47,8 +47,6 @@ rmadd usuwa wierzchołek z grafu, dodaje do akumulatora. decr usuwa wychodzące
 zeń krawędzie i wyłapuje te wierzchołki, które po tym procesie mają licznik 
 wchodzących krawędzi równy 0, dodaje je do stosu
 
-
-
 ** gałęzie =dfs= i =dfs2= - wariant z algorytmem opartym na *przeszukiwaniu wszerz*
 *** kroki
 1. Odwiedzam każdy wierch i może on być w trzech stanach:
